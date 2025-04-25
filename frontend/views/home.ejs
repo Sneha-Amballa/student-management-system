@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Management System</title>
+  <link rel="stylesheet" href="/css/semantic.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Custom Styles */
+    .form-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      margin-bottom: 2rem;
+    }
+    
+    .message-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      width: 350px;
+    }
+    
+    .action-buttons {
+      white-space: nowrap;
+    }
+    
+    .status-label {
+      min-width: 80px;
+      display: inline-block;
+      text-align: center;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .slide-in {
+      animation: slideIn 0.5s forwards;
+    }
+  </style>
+</head>
+<body>
+  <!-- Message Container -->
+  <div class="message-container">
+    <% if (alert) { %>
+      <div class="ui <%= alertType === 'success' ? 'positive' : 'negative' %> message slide-in">
+        <i class="close icon"></i>
+        <div class="header">
+          <%= alert %>
+        </div>
+      </div>
+    <% } %>
+  </div>
+
+  <div class="ui container">
+    <h1 class="ui dividing header">Student Management System</h1>
+
+    <!-- Add Student Form -->
+    <div class="form-card">
+      <h2>Add New Student</h2>
+      <form action="/add" method="POST" class="ui form" id="studentForm">
+        <div class="field">
+          <label>Student ID</label>
+          <input type="number" name="stu_id" placeholder="Enter Student ID" required>
+        </div>
+
+        <div class="two fields">
+          <div class="field">
+            <label>First Name</label>
+            <input type="text" name="stu_fname" placeholder="First Name" required>
+          </div>
+          <div class="field">
+            <label>Last Name</label>
+            <input type="text" name="stu_lname" placeholder="Last Name" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>E-Mail</label>
+          <input type="email" name="stu_mail" placeholder="example@mail.com" required>
+        </div>
+
+        <div class="two fields">
+          <div class="field">
+            <label>Date of Birth</label>
+            <input type="date" name="stu_dob" required>
+          </div>
+          <div class="field">
+            <label>Enrollment Year</label>
+            <input type="number" name="stu_enroll_year" placeholder="2025" min="2000" max="<%= new Date().getFullYear() + 5 %>" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Department</label>
+          <input type="text" name="stu_dep" placeholder="Department Name" required>
+        </div>
+
+        <div class="field">
+          <div class="ui toggle checkbox">
+            <input type="checkbox" name="stu_active" value="true" checked>
+            <label>Is Active</label>
+          </div>
+        </div>
+
+        <button type="submit" class="ui green button fluid">Add Student</button>
+      </form>
+    </div>
+
+    <!-- Students Table -->
+    <h2 class="ui header">Student List</h2>
+    <% if (students.length > 0) { %>
+      <table class="ui celled striped table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>DOB</th>
+            <th>Enroll Year</th>
+            <th>Department</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% students.forEach(function(student) { %>
+            <tr>
+              <td><%= student.stu_id %></td>
+              <td><%= student.stu_fname %> <%= student.stu_lname %></td>
+              <td><a href="mailto:<%= student.stu_mail %>"><%= student.stu_mail %></a></td>
+              <td><%= student.stu_dob.toISOString().split('T')[0] %></td>
+              <td><%= student.stu_enroll_year %></td>
+              <td><%= student.stu_dep %></td>
+              <td>
+                <span class="ui <%= student.stu_active ? 'green' : 'red' %> label status-label">
+                  <%= student.stu_active ? 'Active' : 'Inactive' %>
+                </span>
+              </td>
+              <td class="action-buttons">
+                <a href="/edit/<%= student._id %>" class="ui blue mini button">Edit</a>
+                <form action="/delete/<%= student._id %>" method="POST" style="display:inline;">
+                  <button type="submit" class="ui red mini button" onclick="return confirm('Are you sure you want to delete this student?')">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <div class="ui warning message">
+        <div class="header">
+          No students found
+        </div>
+        <p>Add students using the form above</p>
+      </div>
+    <% } %>
+  </div>
+
+  <script src="/js/semantic.min.js"></script>
+  <script>
+    // Initialize Semantic UI components
+    $('.ui.checkbox').checkbox();
+    
+    // Close message when X is clicked
+    $('.message .close').on('click', function() {
+      $(this).closest('.message').transition('fade');
+    });
+
+    // Auto-close messages after 5 seconds
+    setTimeout(function() {
+      $('.message').transition('fade');
+    }, 5000);
+    
+    // Form validation
+    $('#studentForm').form({
+      fields: {
+        stu_id: 'empty',
+        stu_fname: 'empty',
+        stu_lname: 'empty',
+        stu_mail: 'email',
+        stu_dob: 'empty',
+        stu_enroll_year: 'integer[2000..<%= new Date().getFullYear() + 5 %>]',
+        stu_dep: 'empty'
+      }
+    });
+    
+    // Prevent form resubmission on refresh
+    if (window.history.replaceState) {
+      window.history.replaceState(null, null, window.location.pathname);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Student - Student Management System</title>
+  <link rel="stylesheet" href="/css/semantic.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Message styling */
+    .ui.message {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      width: 350px;
+      animation: slideIn 0.5s forwards;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .ui.message .close.icon {
+      cursor: pointer;
+    }
+    
+    /* Form styling */
+    .form-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      margin-bottom: 2rem;
+    }
+    
+    .form-card h2 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Flash Messages -->
+  <% if (alert) { %>
+    <div class="ui <%= alertType === 'success' ? 'positive' : 'negative' %> message">
+      <i class="close icon"></i>
+      <div class="header">
+        <%= alert %>
+      </div>
+    </div>
+  <% } %>
+
+  <div class="ui container">
+    <h1 class="ui dividing header">Edit Student</h1>
+
+    <div class="form-card">
+      <h2>Edit Student Details</h2>
+      <form action="/edit/<%= student._id %>" method="POST" class="ui form">
+        <div class="field">
+          <label>Student ID</label>
+          <input type="number" name="stu_id" value="<%= student.stu_id %>" required>
+        </div>
+
+        <div class="two fields">
+          <div class="field">
+            <label>First Name</label>
+            <input type="text" name="stu_fname" value="<%= student.stu_fname %>" required>
+          </div>
+          <div class="field">
+            <label>Last Name</label>
+            <input type="text" name="stu_lname" value="<%= student.stu_lname %>" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>E-Mail</label>
+          <input type="email" name="stu_mail" value="<%= student.stu_mail %>" required>
+        </div>
+
+        <div class="two fields">
+          <div class="field">
+            <label>Date of Birth</label>
+            <input type="date" name="stu_dob" value="<%= student.stu_dob.toISOString().split('T')[0] %>" required>
+          </div>
+          <div class="field">
+            <label>Enrollment Year</label>
+            <input type="number" name="stu_enroll_year" value="<%= student.stu_enroll_year %>" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Department</label>
+          <input type="text" name="stu_dep" value="<%= student.stu_dep %>" required>
+        </div>
+
+        <div class="field">
+          <div class="ui toggle checkbox">
+            <input type="checkbox" name="stu_active" value="true" <%= student.stu_active ? 'checked' : '' %>>
+            <label>Active Status</label>
+          </div>
+        </div>
+
+        <div class="two fields">
+          <div class="field">
+            <button type="submit" class="ui green button fluid">Update Student</button>
+          </div>
+          <div class="field">
+            <a href="/" class="ui button fluid">Cancel</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/semantic.min.js"></script>
+  <script>
+    // Initialize Semantic UI components
+    $('.ui.checkbox').checkbox();
+    
+    // Close message when X is clicked
+    $('.message .close').on('click', function() {
+      $(this).closest('.message').transition('fade');
+    });
+
+    // Auto-close messages after 3 seconds
+    setTimeout(function() {
+      $('.message').transition('fade');
+    }, 3000);
+    
+    // Prevent form resubmission on page refresh
+    if (window.history.replaceState) {
+      window.history.replaceState(null, null, window.location.href);
+    }
+  </script>
+</body>
+</html>
