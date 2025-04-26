@@ -57,7 +57,8 @@
 
     <div class="form-card">
       <h2>Edit Student Details</h2>
-      <form action="/edit/<%= student._id %>" method="POST" class="ui form">
+      <form action="https://student-management-system-3-rm3f.onrender.com/edit/<%= student._id %>" method="POST" class="ui form">
+
         <div class="field">
           <label>Student ID</label>
           <input type="number" name="stu_id" value="<%= student.stu_id %>" required>
@@ -107,7 +108,8 @@
             <button type="submit" class="ui green button fluid">Update Student</button>
           </div>
           <div class="field">
-            <a href="/" class="ui button fluid">Cancel</a>
+            <a href="https://student-management-system-3-rm3f.onrender.com/" class="ui button fluid">Cancel</a>
+
           </div>
         </div>
       </form>
