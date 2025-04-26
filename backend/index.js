@@ -5,7 +5,7 @@ const path = require('path');
 const homeRoute = require('./routes/home');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // View Engine
 app.set('view engine', 'ejs');
