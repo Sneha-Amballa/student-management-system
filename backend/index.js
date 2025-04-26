@@ -9,15 +9,15 @@ const port = process.env.PORT || 3000;
 
 // View Engine
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '../frontend/views'));  // 👈 fixed
+app.set('views', path.join(__dirname, '../frontend/views'));
 
 // Middleware
-app.use(express.static(path.join(__dirname, '../frontend/public'))); // 👈 fixed
+app.use(express.static(path.join(__dirname, '../frontend/public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // MongoDB Connection
-mongoose.connect('mongodb://127.0.0.1:27017/Student_Management_System', {
+mongoose.connect('your_mongodb_cloud_uri_here', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
